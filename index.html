@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dayse Borges | Psicóloga</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Quicksand:wght@600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --marrom-profundo: #442d1c;
+            --laranja-pastel: #e8d1a7;
+            --verde-vivo: #386641;   /* Verde bem mais saturado */
+            --vermelho-vivo: #bc4749; /* Vermelho bem mais saturado */
+            --branco-puro: #ffffff;
+        }
+
+        body {
+            background-color: var(--laranja-pastel);
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--branco-puro);
+            width: 100%;
+            max-width: 380px;
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+            /* Sombras sólidas para evitar o efeito de névoa */
+            box-shadow: 0 10px 0 rgba(68, 45, 28, 0.1);
+        }
+
+        header { margin-bottom: 30px; }
+
+        h1 { 
+            font-family: 'Montserrat'; 
+            color: var(--marrom-profundo); 
+            font-weight: 600; 
+            font-size: 1.6rem; 
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .sub-titulo {
+            font-family: 'Montserrat';
+            color: #6b4f3b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .crp {
+            font-size: 0.65rem;
+            color: #a08d7e;
+            margin-top: 8px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background-color: #fcfaf7;
+            padding: 22px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            color: var(--marrom-profundo);
+            text-align: left;
+            border: 2px solid #f2ede4;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* BOTÕES COM CORES VIVAS E SEM NÉVOA */
+        .btn {
+            display: block;
+            width: 85%;
+            padding: 16px;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Montserrat';
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #ffffff !important;
+            letter-spacing: 1px;
+            /* MATA A NÉVOA: Sem gradiente, sem transparência */
+            background-image: none !important;
+            opacity: 1 !important;
+        }
+
+        .btn-confirmar { background-color: var(--verde-vivo) !important; }
+        .btn-cancelar { background-color: var(--vermelho-vivo) !important; }
+
+        .btn:active { transform: scale(0.96); }
+
+        .resultado {
+            display: none;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="entrada">
+        <header>
+            <h1>Dayse Borges</h1>
+            <div class="sub-titulo">Psicóloga</div>
+            <span class="crp">CRP: 03/25699</span>
+        </header>
+        
+        <div class="info-box">
+            <strong>Paciente:</strong> <span id="nomeDisplay">...</span><br>
+            <strong>Horário:</strong> <span id="horaDisplay">...</span>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn btn-confirmar" onclick="decisao('confirmar')">Confirmar</button>
+            <button class="btn btn-cancelar" id="btnCancel" onclick="decisao('cancelar')">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="res-confirmado" class="resultado">
+        <p style="text-align: center; margin-bottom: 20px;"><strong>Lembretes para a sessão</strong></p>
+        <p>- As nossas sessões vão acontecer pelo Google Meet, então lembra de baixar o aplicativo;<br>- Se puder, utilize fones de ouvido durante a sessão, pois garantiremos ainda mais a sua privacidade;<br>- Verifique sua conexão com a internet e também se o espaço em que vai ficar durante a sessão é confortável pra você;<br>- Vou te enviar o link para a chamada de vídeo pelo WhatsApp minutos antes do horário agendado;<br>- Lembra que estou aqui para te ajudar, e tudo que for importante pra você, será pra mim também. Te aguardo!</p>
+    </div>
+
+    <div id="res-cancelado" class="resultado">
+        <p style="text-align: center;">Seu atendimento foi cancelado.<br>Caso queira reagendar pode falar comigo no WhatsApp para verificar horários disponíveis.</p>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const nomePac = params.get('nome') || "Paciente";
+    const dataIso = params.get('data'); 
+
+    document.getElementById('nomeDisplay').innerText = nomePac;
+    if(dataIso) {
+        const agendado = new Date(dataIso);
+        document.getElementById('horaDisplay').innerText = agendado.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    }
+
+    function decisao(tipo) {
+        document.getElementById('entrada').style.display = 'none';
+        document.getElementById(tipo === 'confirmar' ? 'res-confirmado' : 'res-cancelado').style.display = 'block';
+        window.open(`https://wa.me/5574999502664?text=${encodeURIComponent((tipo === 'confirmar' ? 'Confirmou' : 'Cancelou') + ': ' + nomePac)}`, '_blank');
+    }
+</script>
+</body>
+</html>
