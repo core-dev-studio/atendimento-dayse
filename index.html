@@ -19,34 +19,55 @@
             margin: 0;
             padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;     
+            min-height: 100vh;       
+            box-sizing: border-box;
         }
 
-        .container { width: 100%; max-width: 800px; }
+        .container { 
+            width: 100%; 
+            max-width: 500px; /* DIMINUI A LARGURA GERAL PARA NÃO FICAR LARGO DEMAIS */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
         .card {
             background-color: var(--branco);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
             text-align: center;
+            box-sizing: border-box;
         }
 
         h2 { color: var(--marrom-profundo); text-transform: uppercase; font-size: 1.1rem; margin-bottom: 20px; }
 
-        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        /* AJUSTE PARA OS CAMPOS FICAREM UM EMBAIXO DO OUTRO E MAIS ESTREITOS */
+        .form-grid { 
+            display: flex; 
+            flex-direction: column; /* FORÇA UM EMBAIXO DO OUTRO SEMPRE */
+            gap: 15px; 
+            margin-bottom: 20px;
+            align-items: center; /* CENTRALIZA OS INPUTS */
+        }
 
         input, select {
+            width: 100%; /* OCUPA O ESPAÇO DISPONÍVEL NO CARD */
+            max-width: 350px; /* LIMITA A LARGURA PARA NÃO FICAR MUITO LARGO */
             padding: 12px;
             border-radius: 10px;
             border: 1px solid var(--laranja-pastel);
             font-family: 'Montserrat';
             outline: none;
+            box-sizing: border-box;
         }
 
         .btn-gerar {
             width: 100%;
+            max-width: 350px; /* ALINHA O BOTÃO COM A LARGURA DOS INPUTS */
             padding: 15px;
             background-color: var(--verde-oliva);
             color: white;
@@ -64,6 +85,7 @@
             box-shadow: 0 1px 0 #3e441c;
         }
 
+        /* TABELA DE ATENDIMENTOS */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { background: var(--marrom-profundo); color: var(--laranja-pastel); padding: 12px; font-size: 0.7rem; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.85rem; color: var(--marrom-profundo); text-align: center; }
@@ -88,23 +110,26 @@
                     }
                 </script>
             </select>
+            <!-- O botão agora faz parte da grid para manter o alinhamento -->
+            <button class="btn-gerar" onclick="gerar()">GERAR E COPIAR LINK</button>
         </div>
-        <button class="btn-gerar" onclick="gerar()">GERAR E COPIAR LINK</button>
         <div id="feedback">Link gerado para teste local!</div>
     </div>
 
     <div class="card">
         <h2>CONTROLE DE ATENDIMENTOS</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>PACIENTE</th>
-                    <th>DATA</th>
-                    <th>HORÁRIO</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaCorpo"></tbody>
-        </table>
+        <div style="overflow-x: auto;"> <!-- Adicionado para não quebrar no celular -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>PACIENTE</th>
+                        <th>DATA</th>
+                        <th>HORÁRIO</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaCorpo"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -128,14 +153,13 @@
 
         const dataF = d.split('-').reverse().join('/');
         
-        // AQUI ESTÁ A MUDANÇA: Agora o link busca o arquivo na sua pasta local
-       const urlBase = "https://core-dev-studio.github.io/atendimento-dayse/confirmacao.html";
+        const urlBase = "https://core-dev-studio.github.io/atendimento-dayse/confirmacao.html";
         const link = `${urlBase}?nome=${encodeURIComponent(n)}&data=${d}T${h}`;
+
         lista.unshift({ n, d: dataF, h });
         localStorage.setItem('atendimentosDayse', JSON.stringify(lista));
         render();
 
-        // Copia o link e permite que você clique para testar
         navigator.clipboard.writeText(link);
         document.getElementById('feedback').innerHTML = `Link copiado! <a href="${link}" target="_blank" style="color: var(--verde-oliva); font-weight: bold;">Clique aqui para testar</a>`;
         document.getElementById('feedback').style.display = 'block';
