@@ -129,8 +129,8 @@
         const dataF = d.split('-').reverse().join('/');
         
         // AQUI ESTÁ A MUDANÇA: Agora o link busca o arquivo na sua pasta local
-        const link = `index.html?nome=${encodeURIComponent(n)}&data=${d}T${h}`;
-
+       const urlBase = "https://core-dev-studio.github.io/atendimento-dayse/confirmacao.html";
+        const link = `${urlBase}?nome=${encodeURIComponent(n)}&data=${d}T${h}`;
         lista.unshift({ n, d: dataF, h });
         localStorage.setItem('atendimentosDayse', JSON.stringify(lista));
         render();
